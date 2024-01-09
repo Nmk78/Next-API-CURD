@@ -67,7 +67,10 @@ const Home = () => {
     console.log(history);
     console.log("fetchHome fn run");
     axios
-      .post(process.env.NEXT_PUBLIC_API + "/posts/create")
+      .post(process.env.NEXT_PUBLIC_API + "/posts/create",{
+        title: "CREATED",
+        content: "abcabcabcabcabcabc"
+      })
       .then((response) => {
         // Handle the response
         console.log(response.data);
@@ -84,7 +87,7 @@ const Home = () => {
     // console.log(history);
     console.log("update fn run");
     axios
-      .post(process.env.NEXT_PUBLIC_API + "/posts/659c39e7743150018447cb2d")
+      .patch(process.env.NEXT_PUBLIC_API + "/posts/659c39e7743150018447cb2d", {title: "UPDATED"})
       .then((response) => {
         // Handle the response
         console.log(response.data);
@@ -95,6 +98,8 @@ const Home = () => {
         console.error("Error:", error);
       });
   };
+
+  ////////////////////////
   return (
     <div className="w-full ">
       <div className="w-full  flex justify-center items-center border-b-2">

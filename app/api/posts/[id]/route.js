@@ -5,32 +5,39 @@ import { NextResponse } from "next/server";
 
 export const GET = async (Request) => {
   try {
-
     await connectToMongoDB();
 
-    const fetched_post = await post.findOne({title: "ABC"}).select("title content");
+    const fetched_post = await post
+      .findOne({ title: "UPDATED" })
+      .select("title content");
     console.log(fetched_post);
 
     return new NextResponse(fetched_post);
   } catch (error) {
-      //     return new NextResponse({ error: error });
+    return new NextResponse({ error: error });
 
     throw error;
   }
-};export const PATCH = async (Request) => {
-  try {
+};
 
-      const body = Request.json();
-      const {title} = body
+//UPDATE
+export const PATCH = async (Request) => {
+  try {
+    const body = await Request.json();
+    const { title } = body;
     await connectToMongoDB();
 
-    const fetched_post = await post.findOne({title: "ABC"}).select("title content");
-    console.log(fetched_post);
+    const updated_post = await post
+      .findOneAndUpdate(
+        { title: "ABC" },
+        { title: title },
+        { new: true, useFindAndModify: false }
+      )
+      .select("title content");
+    console.log(updated_post);
 
-    return new NextResponse(fetched_post);
+    return new NextResponse(updated_post);
   } catch (error) {
-      //     return new NextResponse({ error: error });
-
     throw error;
   }
 };
