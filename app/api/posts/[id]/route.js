@@ -3,14 +3,20 @@ import post from "@/model/post";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
-export const GET = async (Request) => {
+export const GET = async (Request, {params}) => {
   try {
     await connectToMongoDB();
 
+    const id = params.id
+
     const fetched_post = await post
-      .findOne({ title: "UPDATED" })
+      .findOne({ id: id })
       .select("title content");
-    console.log(fetched_post);
+    console.log(id);
+    
+    if(!fetched_post){
+      return new NextResponse("Error post not found")
+    }
 
     return new NextResponse(fetched_post);
   } catch (error) {

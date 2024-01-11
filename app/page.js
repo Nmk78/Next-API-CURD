@@ -4,7 +4,8 @@ import React, { useState } from "react";
 
 const Home = () => {
   const [history, setHistory] = useState([]);
-  const [response, setResponse] = useState();
+  const [id, setId] = useState([]);
+  const [response, setResponse] = useState([]);
 
   const fetchHome = () => {
     setResponse("");
@@ -13,10 +14,21 @@ const Home = () => {
     console.log("fetchHome fn run");
     axios
       .get(process.env.NEXT_PUBLIC_API + "/posts")
-      .then((response) => {
+      .then((res) => {
         // Handle the response
-        console.log(response.data);
-        setResponse(response.data);
+        console.log(res.data);
+        // response
+        // data = response.data
+        setResponse(res.data);
+
+        console.log(response);
+
+
+        // response.data.map(post => {
+        //     // setId([...id, post.id])
+        //     console.log("Post= ",post);
+        //   });
+        // console.log("id = ",id);
       })
       .catch((error) => {
         // Handle errors
@@ -29,7 +41,7 @@ const Home = () => {
     setHistory([...history, { path: "/posts/:id", method: "GET" }]);
     // console.log(history);
     // console.log("fetchHome fn run");
-    let id = "659c39e7743150018447cb2d";
+    let id = "h763beabg68";
     axios
       // .get(process.env.NEXT_PUBLIC_API + "/posts/659c39e7743150018447cb2d")
       .get(process.env.NEXT_PUBLIC_API + "/posts/" + id)
@@ -60,16 +72,34 @@ const Home = () => {
         console.error("Error:", error);
       });
   };
+  const deleteAll = () => {
+    setResponse("");
+    setHistory([...history, { path: "/posts/create", method: "DELETE" }]);
+    console.log(history);
+    console.log("delete all fn run");
+    axios
+      .delete(process.env.NEXT_PUBLIC_API + "/posts/create")
+      .then((response) => {
+        // Handle the response
+        console.log(response.data);
+        setResponse(response.data);
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error("Error:", error);
+      });
+  };
 
   const createPost = () => {
     setResponse("");
     setHistory([...history, { path: "/posts/create", method: "POST" }]);
     console.log(history);
-    console.log("fetchHome fn run");
+    const id = Math.random().toString(36).substring(2)
     axios
-      .post(process.env.NEXT_PUBLIC_API + "/posts/create",{
+      .post(process.env.NEXT_PUBLIC_API + "/posts/create", {
         title: "CREATED",
-        content: "abcabcabcabcabcabc"
+        content: "abcabcabcabcabcabc",
+        id: id
       })
       .then((response) => {
         // Handle the response
@@ -87,7 +117,9 @@ const Home = () => {
     // console.log(history);
     console.log("update fn run");
     axios
-      .patch(process.env.NEXT_PUBLIC_API + "/posts/659c39e7743150018447cb2d", {title: "UPDATED"})
+      .patch(process.env.NEXT_PUBLIC_API + "/posts/659c39e7743150018447cb2d", {
+        title: "UPDATED",
+      })
       .then((response) => {
         // Handle the response
         console.log(response.data);
@@ -101,7 +133,7 @@ const Home = () => {
 
   ////////////////////////
   return (
-    <div className="w-full ">
+    <div className="w-full md:font-small ">
       <div className="w-full  flex justify-center items-center border-b-2">
         <button
           className="m-5 px-3 py-2 rounded-sm shadow-lg hover:bg-teal-600 bg-teal-500 "
@@ -122,10 +154,16 @@ const Home = () => {
           Update One Post
         </button>{" "}
         <button
-          className="m-5 px-3 py-2 rounded-sm shadow-lg hover:bg-teal-600 bg-teal-500 "
+          className="m-5 px-3 py-2 rounded-sm shadow-lg hover:bg-orange-600 bg-orange-500 "
           onClick={deleteOne}
         >
           Delete One
+        </button>{" "}
+        <button
+          className="m-5 px-3 py-2 rounded-sm shadow-lg hover:bg-red-600 bg-red-500 "
+          onClick={deleteAll}
+        >
+          Delete All
         </button>{" "}
         <button
           className="m-5 px-3 py-2 rounded-sm shadow-lg hover:bg-teal-600 bg-teal-500 "
@@ -146,7 +184,7 @@ const Home = () => {
                 <li key={his.index} className="flex justify-between ">
                   {his.path}{" "}
                   <div
-                  style={{"margin-left":"10px"}}
+                    style={{ "margin-left": "10px" }}
                     className={
                       his.method == "DELETE"
                         ? "text-orange-500"
@@ -166,6 +204,14 @@ const Home = () => {
         </div>
         {response && (
           <div id="Result" className="w-full h-auto px-5 py-3 bg-gray-900">
+            {/* {response?.map((post) => {
+              return (
+                <div key={post?.id}>
+                  <div>{post?.title}</div>
+                  <div>{post?.id}</div>
+                </div>
+              );
+            })} */}
             {response}
           </div>
         )}

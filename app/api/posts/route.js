@@ -6,9 +6,9 @@ export const GET = async (Request) => {
       try {
             console.log("Get");
             await connectToMongoDB()
-            const posts = await post.find({}).limit(9).select('title')
-            console.log(posts);
-            return new NextResponse(posts)
+            const posts = await post.find({}).select('title id')
+            // console.log(posts);
+            return new NextResponse([posts])
       } catch (error) {
             throw error;
       }
